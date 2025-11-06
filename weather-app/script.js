@@ -1,4 +1,4 @@
-const apiKey = "7747fc103d7df36be54364fe39d4d4da"; 
+const apiKey = "7747fc103d7df36be54364fe39d4d4da";
 const apiUrl = "https://api.openweathermap.org/data/2.5/weather?units=metric&q=";
 
 const searchBox = document.querySelector(".search input");
@@ -34,12 +34,15 @@ const countryToCapital = {
     "australia": "Canberra"
 };
 
-// Works both on localhost and Render
+// ✅ Auto-detect correct image path (works for both local + Render)
 function chooseIconFilename(weatherMain, isNight) {
     const base = weatherMap[weatherMain.toLowerCase()] || weatherMain.toLowerCase();
+
+    // Detect if hosted on Render or localhost
     const prefix = window.location.hostname === "localhost" || window.location.protocol === "file:"
-        ? "images"
-        : "/images";
+        ? "../images"   // Local use (index.html inside a folder)
+        : "./images";   // Render use (static hosting relative path)
+
     return isNight
         ? `${prefix}/${base}-night.png`
         : `${prefix}/${base}.png`;
