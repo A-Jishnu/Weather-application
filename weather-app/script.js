@@ -10,13 +10,21 @@ const localTimeEl = document.querySelector(".local-time");
 window.onload = () => searchBox.focus();
 
 const weatherMap = {
-    "clouds": "clouds",
     "clear": "clear",
+    "clouds": "clouds",
     "rain": "rain",
     "drizzle": "drizzle",
-    "mist": "mist",
+    "thunderstorm": "thunderstorm",
     "snow": "snow",
-    "thunderstorm": "thunderstorm"
+    "mist": "mist",
+    "fog": "mist",
+    "haze": "mist",
+    "smoke": "mist",
+    "dust": "mist",
+    "sand": "mist",
+    "ash": "mist",
+    "squall": "rain",
+    "tornado": "thunderstorm"
 };
 
 const countryToCapital = {
@@ -35,7 +43,7 @@ const countryToCapital = {
 };
 
 function chooseIconFilename(weatherMain, isNight) {
-    const base = weatherMap[weatherMain.toLowerCase()] || weatherMain.toLowerCase();
+    const base = weatherMap[weatherMain.toLowerCase()] || "clear";
     return isNight
         ? `images/${base}-night.png`
         : `images/${base}.png`;
