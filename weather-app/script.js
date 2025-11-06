@@ -34,11 +34,15 @@ const countryToCapital = {
     "australia": "Canberra"
 };
 
+// Works both on localhost and Render
 function chooseIconFilename(weatherMain, isNight) {
     const base = weatherMap[weatherMain.toLowerCase()] || weatherMain.toLowerCase();
+    const prefix = window.location.hostname === "localhost" || window.location.protocol === "file:"
+        ? "images"
+        : "/images";
     return isNight
-        ? `/images/${base}-night.png`
-        : `/images/${base}.png`;
+        ? `${prefix}/${base}-night.png`
+        : `${prefix}/${base}.png`;
 }
 
 function formatLocalTime(date) {
@@ -55,9 +59,7 @@ async function checkWeather(city) {
     if (!city) return;
 
     const cityKey = city.toLowerCase().trim();
-    if (countryToCapital[cityKey]) {
-        city = countryToCapital[cityKey];
-    }
+    if (countryToCapital[cityKey]) city = countryToCapital[cityKey];
 
     try {
         const response = await fetch(apiUrl + encodeURIComponent(city) + `&appid=${apiKey}`);
@@ -80,7 +82,7 @@ async function checkWeather(city) {
         const sunrise = data.sys?.sunrise || null;
         const sunset = data.sys?.sunset || null;
 
-        let isDay;
+        let isDay = true;
         if (sunrise && sunset) {
             isDay = localUnixSec >= sunrise && localUnixSec < sunset;
         } else {
@@ -100,19 +102,10 @@ async function checkWeather(city) {
             weatherIcon.style.opacity = "1";
         }, 300);
 
-        const formatted = formatLocalTime(new Date(Date.UTC(
-            localDate.getUTCFullYear(),
-            localDate.getUTCMonth(),
-            localDate.getUTCDate(),
-            localDate.getUTCHours(),
-            localDate.getUTCMinutes()
-        )));
-        localTimeEl.textContent = `Local time: ${formatted}`;
+        localTimeEl.textContent = `Local time: ${formatLocalTime(localDate)}`;
 
         document.querySelector(".weather").style.display = "block";
         document.querySelector(".error").style.display = "none";
-
-        console.log(`Mode: ${isDay ? "Day" : "Night"} | Icon: ${iconPath}`);
 
     } catch (err) {
         console.error(err);
@@ -122,10 +115,7 @@ async function checkWeather(city) {
     }
 }
 
-searchBtn.addEventListener("click", () => {
-    checkWeather(searchBox.value.trim());
-});
-
+searchBtn.addEventListener("click", () => checkWeather(searchBox.value.trim()));
 searchBox.addEventListener("keypress", (event) => {
     if (event.key === "Enter") checkWeather(searchBox.value.trim());
 });
