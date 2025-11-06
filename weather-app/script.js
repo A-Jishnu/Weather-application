@@ -34,18 +34,11 @@ const countryToCapital = {
     "australia": "Canberra"
 };
 
-// ✅ Auto-detect correct image path (works for both local + Render)
 function chooseIconFilename(weatherMain, isNight) {
     const base = weatherMap[weatherMain.toLowerCase()] || weatherMain.toLowerCase();
-
-    // Detect if hosted on Render or localhost
-    const prefix = window.location.hostname === "localhost" || window.location.protocol === "file:"
-        ? "../images"   // Local use (index.html inside a folder)
-        : "./images";   // Render use (static hosting relative path)
-
     return isNight
-        ? `${prefix}/${base}-night.png`
-        : `${prefix}/${base}.png`;
+        ? `images/${base}-night.png`
+        : `images/${base}.png`;
 }
 
 function formatLocalTime(date) {
